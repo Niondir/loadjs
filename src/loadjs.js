@@ -75,9 +75,10 @@
    * Load individual JavaScript file.
    * @param {string} path - The file path
    * @param {Function} callbackFn - The callback function
+   * @param {Object} target - The target document to load the script
    */
-  function loadScript(path, callbackFn) {
-    var s = doc.createElement('script');
+  function loadScript(path, callbackFn, target) {
+    var s = target.createElement('script');
     s.src = path;
 
     s.onload = s.onerror = function(ev) {
@@ -101,8 +102,9 @@
    * Load multiple JavaScript files.
    * @param {string[]} paths - The file paths
    * @param {Function} callbackFn - The callback function
+   * @param {Object} target - The target document to load the script
    */
-  function loadScripts(paths, callbackFn) {
+  function loadScripts(paths, callbackFn, target) {
     // listify paths
     paths = paths.push ? paths : [paths];
 
@@ -117,7 +119,7 @@
     };
     
     // load scripts
-    while (i--) loadScript(paths[i], fn);
+    while (i--) loadScript(paths[i], fn, target);
   }
 
 
@@ -129,7 +131,7 @@
    * @param {Function} [arg3] - The fail callback
    */
   function loadjs(paths, arg1, arg2, arg3) {
-    var bundleId, successFn, failFn;
+    var bundleId, successFn, failFn, target = doc;
 
     // bundleId
     if (arg1 && !arg1.call) bundleId = arg1;
@@ -159,7 +161,7 @@
 
         // publish bundle load event
         publish(bundleId, pathsNotFound);
-      });
+      }, target);
     }, 0);  // fires after window 'load' event
   }
 
