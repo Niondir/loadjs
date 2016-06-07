@@ -161,6 +161,10 @@
         publish(bundleId, pathsNotFound);
       });
     }, 0);  // fires after window 'load' event
+    
+    return {
+      ready: bundleId ? loadjs.ready.bind(this, bundleId) : function() {throw new Error("You have to define a bundleId when using the ready callback");}
+    }
   }
 
 

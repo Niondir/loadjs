@@ -24,6 +24,39 @@ describe('LoadJS tests', function() {
     });
   });
 
+  describe('allow chaining the ready function', function () {
+
+    it('calls success handler on success', function (done) {
+      loadjs(['assets/file1.js'], "chainSuccess").ready(function () {
+        assert.equal(pathsLoaded['file1.js'], true);
+        done();
+      }, function () {
+        assert.fail();
+        done();
+      });
+    });
+
+    it('calls error handler on error', function (done) {
+      loadjs(['assets/file-doesntexist.js'], "chainFail").ready(function () {
+        assert.equal(pathsNotFound[0], 'assets/file-doesntexist.js');
+        done();
+      }, function (pathsNotFound) {
+        done();
+      });
+    });
+
+    it('throws error when no bundleId is defined', function () {
+      try {
+        loadjs(['assets/file-doesntexist.js']).ready();
+        assert.fail();
+      }
+      catch (e) {
+        assert.equal(e.message, "You have to define a bundleId when using the ready callback");
+      }
+    });
+    
+  });
+  
 
   it('should call fail callback on invalid path', function(done) {
     loadjs(['assets/file-doesntexist.js'],
